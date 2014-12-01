@@ -24,5 +24,9 @@
 
     <color name="cell_broadcast_color_primary">#ff263238</color>
     <color name="cell_broadcast_color_primary_dark">#ff21272b</color>
+
+    <!-- Color for icons in the actionbar -->
+    <color name="actionbar_icon_color">#ffffff</color>
+
 </resources>
 

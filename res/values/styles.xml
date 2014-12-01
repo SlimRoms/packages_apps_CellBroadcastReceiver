@@ -26,6 +26,7 @@
         <item name="android:actionBarTheme">@android:style/ThemeOverlay.Material.Dark.ActionBar</item>
         <item name="android:colorPrimary">@color/cell_broadcast_color_primary</item>
         <item name="android:colorPrimaryDark">@color/cell_broadcast_color_primary_dark</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_back_arrow</item>
     </style>
 
 </resources>
