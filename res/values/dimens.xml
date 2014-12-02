@@ -24,4 +24,10 @@
     <!-- Dialog button bar height -->
     <dimen name="alert_dialog_button_bar_height">48dip</dimen>
 
+    <!-- ActionBar height -->
+    <dimen name="actionbar_size">56dip</dimen>
+
+    <!-- ActionBar contentInsetStart -->
+    <dimen name="actionbar_subsettings_contentInsetStart">72dp</dimen>
+
 </resources>
