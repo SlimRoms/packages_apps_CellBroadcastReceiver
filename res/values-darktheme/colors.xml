@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="unread_bgcolor">#ff111111</color>
+    <color name="read_bgcolor">#ff000000</color>
+    <color name="cell_broadcast_color_primary">#ff111111</color>
+    <color name="cell_broadcast_color_primary_dark">#ff000000</color>
+</resources>
