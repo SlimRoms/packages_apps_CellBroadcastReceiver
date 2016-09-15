@@ -47,6 +47,7 @@ import com.android.internal.telephony.PhoneConstants;
 
 import com.android.cellbroadcastreceiver.CellBroadcastAlertAudio.ToneType;
 import com.android.cellbroadcastreceiver.CellBroadcastOtherChannelsManager.CellBroadcastChannelRange;
+import com.android.internal.telephony.PhoneConstants;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -212,6 +213,12 @@ public class CellBroadcastAlertService extends Service {
         }
 
         final CellBroadcastMessage cbm = new CellBroadcastMessage(message);
+        int subId = intent.getExtras().getInt(PhoneConstants.SUBSCRIPTION_KEY);
+        if (SubscriptionManager.isValidSubscriptionId(subId)) {
+            cbm.setSubId(subId);
+        } else {
+            Log.e(TAG, "Invalid subscription id");
+        }
 
         if (!isMessageEnabledByUser(cbm)) {
             Log.d(TAG, "ignoring alert of type " + cbm.getServiceCategory() +
@@ -324,7 +331,7 @@ public class CellBroadcastAlertService extends Service {
             return;
         }
 
-        if (cbm.isEmergencyAlertMessage()) {
+        if (isEmergencyMessage(this, cbm)) {
             // start alert sound / vibration / TTS and display full-screen alert
             openEmergencyAlertNotification(cbm);
         } else {
@@ -565,7 +572,7 @@ public class CellBroadcastAlertService extends Service {
     static void addToNotificationBar(CellBroadcastMessage message,
                                      ArrayList<CellBroadcastMessage> messageList, Context context,
                                      boolean fromSaveState) {
-        int channelTitleId = CellBroadcastResources.getDialogTitleResource(message);
+        int channelTitleId = CellBroadcastResources.getDialogTitleResource(context, message);
         CharSequence channelName = context.getText(channelTitleId);
         String messageBody = message.getMessageBody();
 
@@ -619,5 +626,42 @@ public class CellBroadcastAlertService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;    // clients can't bind to this service
+    }
+
+    /**
+     * Check if the cell broadcast message is an emergency message or not
+     * @param context Device context
+     * @param cbm Cell broadcast message
+     * @return True if the message is an emergency message, otherwise false.
+     */
+    public static boolean isEmergencyMessage(Context context, CellBroadcastMessage cbm) {
+        boolean isEmergency = false;
+
+        if (cbm == null) {
+            return false;
+        }
+
+        int id = cbm.getServiceCategory();
+        int subId = cbm.getSubId();
+
+        if (cbm.isEmergencyAlertMessage()) {
+            isEmergency = true;
+        } else {
+            ArrayList<CellBroadcastChannelRange> ranges = CellBroadcastOtherChannelsManager.
+                    getInstance().getCellBroadcastChannelRanges(context, subId);
+
+            if (ranges != null) {
+                for (CellBroadcastChannelRange range : ranges) {
+                    if (range.mStartId <= id && range.mEndId >= id) {
+                        isEmergency = range.mIsEmergency;
+                        break;
+                    }
+                }
+            }
+        }
+
+        Log.d(TAG, "isEmergencyMessage: " + isEmergency + ", subId = " + subId + ", " +
+                "message id = " + id);
+        return isEmergency;
     }
 }
