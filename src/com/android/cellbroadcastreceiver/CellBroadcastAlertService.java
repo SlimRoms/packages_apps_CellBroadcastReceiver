@@ -249,7 +249,7 @@ public class CellBroadcastAlertService extends Service {
             }
         }
 
-        int subId = intent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY,
+        subId = intent.getIntExtra(PhoneConstants.SUBSCRIPTION_KEY,
                 SubscriptionManager.getDefaultSmsSubscriptionId());
         if (subId == SubscriptionManager.INVALID_SUBSCRIPTION_ID) {
             subId = SubscriptionManager.getDefaultSubscriptionId();
